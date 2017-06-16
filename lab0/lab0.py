@@ -1,4 +1,3 @@
-# This is the file you'll use to submit most of Lab 0.
 
 # Certain problems may ask you to modify other files to accomplish a certain
 # task. There are also various other files that make the problem set work, and
@@ -31,14 +30,39 @@ ANSWER_1 = '2'
 # Problem 2.1: Warm-Up Stretch
 
 def cube(x):
-    raise NotImplementedError
+	return x**3
 
 def factorial(x):
-    raise NotImplementedError
+	if x==0:
+		return 1
+	elif x<0:
+		raise IntegerError
+	else:
+		return x*factorial(x-1)
 
 def count_pattern(pattern, lst):
-    raise NotImplementedError
+	def sublst_in_lst(sublst, lst):
+		try:
+			match_at= lst.index(sublst[0])
+		except ValueError:
+			return False
+		for couple in zip(sublst, lst[match_at:]):
+			if not couple[0]==couple[1]:
+				return False
+		else:
+			return True
 
+	count= 0
+	while(sublst_in_lst(pattern, lst)):
+		count+=1
+		lst= lst[lst.index(pattern[0])+1: ]
+	return count
+
+'''
+import pdb
+pdb.set_trace()
+print(count_pattern(['a', 'b'], ['a', 'b', 'a']))
+'''
 
 # Problem 2.2: Expression depth
 
