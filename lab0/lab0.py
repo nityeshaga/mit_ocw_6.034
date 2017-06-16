@@ -58,11 +58,6 @@ def count_pattern(pattern, lst):
 		lst= lst[lst.index(pattern[0])+1: ]
 	return count
 
-'''
-import pdb
-pdb.set_trace()
-print(count_pattern(['a', 'b'], ['a', 'b', 'a']))
-'''
 
 # Problem 2.2: Expression depth
 
@@ -73,7 +68,20 @@ def depth(expr):
 # Problem 2.3: Tree indexing
 
 def tree_ref(tree, index):
-    raise NotImplementedError
+	subject= tree
+	try:
+		for pos in index:
+			subject= subject[pos]
+		return subject
+	except TypeError:
+		return subject[index]
+
+'''
+import pdb
+pdb.set_trace()
+tree= (((1, 2), 3), (4, (5, 6)), 7, (8, 9, 10))
+tree_ref(tree, (3,1))
+'''
 
 
 # Section 3: Symbolic algebra
@@ -81,8 +89,10 @@ def tree_ref(tree, index):
 # Your solution to this problem doesn't go in this file.
 # Instead, you need to modify 'algebra.py' to complete the distributer.
 
+'''
 from algebra import Sum, Product, simplify_if_possible
 from algebra_utils import distribution, encode_sumprod, decode_sumprod
+'''
 
 # Section 4: Survey _________________________________________________________
 
