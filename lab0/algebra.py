@@ -154,25 +154,38 @@ def multiply(expr1, expr2):
 
 
 def do_multiply(expr1, expr2):
-    """
-    You have two Expressions, and you need to make a simplified expression
-    representing their product. They are guaranteed to be of type Expression
-    -- that is, either Sums or Products -- by the multiply() function that
-    calls this one.
+	"""
+	You have two Expressions, and you need to make a simplified expression
+	representing their product. They are guaranteed to be of type Expression
+	-- that is, either Sums or Products -- by the multiply() function that
+	calls this one.
 
-    So, you have four cases to deal with:
-    * expr1 is a Sum, and expr2 is a Sum
-    * expr1 is a Sum, and expr2 is a Product
-    * expr1 is a Product, and expr2 is a Sum
-    * expr1 is a Product, and expr2 is a Product
-
-    You need to create Sums or Products that represent what you get by
-    applying the algebraic rules of multiplication to these expressions,
-    and simplifying.
-
-    Look above for details on the Sum and Product classes. The Python operator
-    '*' will not help you.
-    """
-    # Replace this with your solution.
-    raise NotImplementedError
-
+	So, you have four cases to deal with:
+	* expr1 is a Sum, and expr2 is a Sum
+	* expr1 is a Sum, and expr2 is a Product
+	* expr1 is a Product, and expr2 is a Sum
+	* expr1 is a Product, and expr2 is a Product
+	
+	You need to create Sums or Products that represent what you get by
+	applying the algebraic rules of multiplication to these expressions,
+	and simplifying.
+	
+	Look above for details on the Sum and Product classes. The Python operator
+	'*' will not help you.
+	"""
+	
+	#case 1: sum-sum
+	if isinstance(expr1, Sum) and isinstance(expr2, Sum):
+		result= Sum([multiply(expr1, term) for term in expr2])
+		return result
+	#case 2: sum-product
+	if isinstance(expr1, Sum) and isinstance(expr2, Product):
+		expr1, expr2= expr2, expr1
+	#case 3: product-sum
+	if isinstance(expr1, Product) and isinstance(expr2, Sum):
+		result= Sum([multiply(expr1, term) for term in expr2])
+		return result
+	#case 4: product-product
+	prod= list(expr1)
+	prod+=list(expr2)
+	return Product(prod)
