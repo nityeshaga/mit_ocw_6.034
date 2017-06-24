@@ -1,5 +1,4 @@
 # lab1.py 
-
 #You should start here when providing the answers to Problem Set 1.
 #Follow along in the problem set, which is at:
 #http://ai6034.mit.edu/fall12/index.php?title=Lab_1
@@ -82,7 +81,6 @@ ANSWER_5 = '0'
 poker_data = ( 'two-pair beats pair',
                'three-of-a-kind beats two-pair',
                'straight beats three-of-a-kind',
-               'flush beats straight',
                'full-house beats flush',
                'straight-flush beats full-house' )
 '''
@@ -120,8 +118,44 @@ TEST_RESULTS_TRANS2 = forward_chain([transitive_rule],
 
 # Then, put them together into a list in order, and call it
 # family_rules.
-family_rules = [ ]                    # fill me in
-
+son_rule= IF( AND( 'parent (?x) (?y)',
+				   'male (?y)'),
+			  THEN('son (?y) (?x)') )
+daughter_rule= IF( AND( 'parent (?x) (?y)',
+						'female (?y)'),
+				   THEN('daughter (?y) (?x)') )
+father_rule= IF( AND( OR( 'daughter (?x) (?y)',
+					 	  'son (?x) (?y)'),
+					  'male (?y)'),
+				 THEN('father (?y) (?x)') )
+mother_rule= IF( AND( OR( 'daughter (?x) (?y)',
+					 	  'son (?x) (?y)'),
+					  'female (?y)'),
+				 THEN('mother (?y) (?x)') )
+sibling_rule= IF( AND( 'parent (?x) (?y)',
+					   'parent (?x) (?z)',
+					   NOT( 'same-identity (?y) (?z)')),
+				  THEN('sibling (?y) (?z)') )
+brother_rule= IF( AND( 'sibling (?x) (?y)',
+					   'male (?x)'),
+				 THEN('brother (?x) (?y)') )
+sister_rule= IF( AND( 'sibling (?x) (?y)',
+					  'female (?x)'),
+				 THEN('sister (?x) (?y)') )
+grandparent_rule= IF( AND( 'parent (?x) (?y)',
+						   'parent (?z) (?x)'),
+					  THEN('grandparent (?z) (?y)'))
+grandchild_rule= IF( 'grandparent (?x) (?y)',
+					 THEN('grandchild (?y) (?x)'))
+cousin_rule= IF( AND( 'parent (?a) (?x)',
+					  'parent (?b) (?y)',
+					  'sibling (?a) (?b)'),
+				 THEN('cousin (?x) (?y)') )
+similar_rule= IF( OR( 'male (?x)',
+					  'female (?x)'),
+				  THEN('same-identity (?x) (?x)') )
+				 
+family_rules = [similar_rule, son_rule, daughter_rule, father_rule, mother_rule, sibling_rule, brother_rule, sister_rule, grandparent_rule, grandchild_rule, cousin_rule]
 # Some examples to try it on:
 # Note: These are used for testing, so DO NOT CHANGE
 simpsons_data = ("male bart",
@@ -137,6 +171,7 @@ simpsons_data = ("male bart",
                  "parent homer lisa",
                  "parent homer maggie",
                  "parent abe homer")
+# print forward_chain(family_rules, simpsons_data)
 TEST_RESULTS_6 = forward_chain(family_rules,
                                simpsons_data,verbose=False)
 # You can test your results by uncommenting this line:
@@ -167,13 +202,14 @@ black_data = ("male sirius",
 # This should generate 14 cousin relationships, representing
 # 7 pairs of people who are cousins:
 
+#print forward_chain(family_rules, black_data)
 black_family_cousins = [ 
     x for x in 
     forward_chain(family_rules, black_data, verbose=False) 
     if "cousin" in x ]
 
 # To see if you found them all, uncomment this line:
-# print black_family_cousins
+#print black_family_cousins
 
 # To debug what happened in your rules, you can set verbose=True
 # in the function call above.
