@@ -1,6 +1,7 @@
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
+*.pyc
 *$py.class
 
 # C extensions
@@ -23,3 +24,10 @@ wheels/
 *.egg-info/
 .installed.cfg
 *.egg
+
+# swap files
+*.swp
+
+# misc
+*netmath.pdf
+*.zip
