@@ -7,17 +7,17 @@
 
 # 1: True or false - Hill Climbing search is guaranteed to find a solution
 #	 if there is a solution
-ANSWER1 = None
+ANSWER1 = False
 
 # 2: True or false - Best-first search will give an optimal search result
 #	 (shortest path length).
 #	 (If you don't know what we mean by best-first search, refer to
 #	  http://courses.csail.mit.edu/6.034f/ai3/ch4.pdf (page 13 of the pdf).)
-ANSWER2 = None
+ANSWER2 = False
 
 # 3: True or false - Best-first search and hill climbing make use of
 #	 heuristic values of nodes.
-ANSWER3 = None
+ANSWER3 = True
 
 # 4: True or false - A* uses an extended-nodes set.
 ANSWER4 = None
@@ -104,9 +104,9 @@ def hill_climbing(graph, start, goal):
 		sublevel_sorted= []
 		all_extensions= (path + [neighbour] for neighbour in graph.get_connected_nodes(path[-1]))
 		for extension in all_extensions:
-			if extension[-1] not in extension:
+			if extension[-1] not in extension[:-1]:
 				sublevel_sorted.append(extension)
-		sorted(sublevel_sorted, key= lambda path: graph.get_heuristic(path[-1], goal))
+		sublevel_sorted= sorted(sublevel_sorted, key= lambda path: graph.get_heuristic(path[-1], goal))
 
 		sublevel_sorted.extend(agenda)
 		agenda= sublevel_sorted
@@ -117,7 +117,7 @@ def hill_climbing(graph, start, goal):
 from graphs import NEWGRAPH1
 import pdb
 pdb.set_trace()
-hill_climbing(NEWGRAPH1, 'S', 'G')
+hill_climbing(NEWGRAPH1, 'F', 'G')
 '''
 
 
@@ -127,7 +127,31 @@ hill_climbing(NEWGRAPH1, 'S', 'G')
 ## The k top candidates are to be determined using the
 ## graph get_heuristic function, with lower values being better values.
 def beam_search(graph, start, goal, beam_width):
-	raise NotImplementedError
+	agenda= [[start]]	#a list of paths stored as lists
+	result_path= []		#the search result
+
+	while agenda:
+		new_agenda= agenda[:]
+		for path in agenda:
+			new_agenda.remove(path)
+
+			if path[-1]==goal:
+				result_path= path
+				break
+
+			all_extensions= (path + [neighbour] for neighbour in graph.get_connected_nodes(path[-1]))
+			for extension in all_extensions:
+				if extension[-1] not in extension[:-1]:
+					new_agenda.append(extension)
+		else:
+			new_agenda= sorted(new_agenda, key= lambda path: graph.get_heuristic(path[-1], goal))
+			agenda= new_agenda[:beam_width]
+
+		if not result_path==[]:
+			break
+
+	return result_path
+
 
 ## Now we're going to try optimal search.  The previous searches haven't
 ## used edge distances in the calculation.
