@@ -20,7 +20,7 @@ ANSWER2 = False
 ANSWER3 = True
 
 # 4: True or false - A* uses an extended-nodes set.
-ANSWER4 = None
+ANSWER4 = True
 
 # 5: True or false - Breadth first search is guaranteed to return a path
 #	 with the shortest number of nodes.
@@ -28,7 +28,7 @@ ANSWER5 = True
 
 # 6: True or false - The regular branch and bound uses heuristic values
 #	 to speed up the search for an optimal path.
-ANSWER6 = None
+ANSWER6 = False
 
 # Import the Graph data structure from 'search.py'
 # Refer to search.py for documentation
@@ -159,14 +159,54 @@ def beam_search(graph, start, goal, beam_width):
 ## This function takes in a graph and a list of node names, and returns
 ## the sum of edge lengths along the path -- the total distance in the path.
 def path_length(graph, node_names):
-	raise NotImplementedError
+	distance= 0
+	for node1,node2 in zip(node_names[:-1], node_names[1:]):
+		distance+=(graph.get_edge(node1, node2)).length
+	return distance
 
 
 def branch_and_bound(graph, start, goal):
-	raise NotImplementedError
+	agenda= [[start]]	#a list of paths stored as lists
+	result_path= []		#the search result
+
+	while agenda:
+		path= min(agenda, key= lambda possible_path: path_length(graph, possible_path))
+		agenda.remove(path)
+
+		if path[-1]==goal:
+			result_path= path
+			break
+
+		all_extensions= (path + [neighbour] for neighbour in graph.get_connected_nodes(path[-1]))
+		for extension in all_extensions:
+			if extension[-1] not in extension[:-1]:
+				agenda.append(extension)
+
+	return result_path
+
 
 def a_star(graph, start, goal):
-	raise NotImplementedError
+	agenda= [[start]]	#a list of paths stored as lists
+	result_path= []		#the search result
+	extended_set= set()	#set of nodes that have been extended
+
+	while agenda:
+		path= min(agenda, key= lambda possible_path: path_length(graph, possible_path) +
+													 graph.get_heuristic(possible_path[-1], goal))
+		agenda.remove(path)
+		extended_set.add(path[-1])
+
+		if path[-1]==goal:
+			result_path= path
+			break
+
+		all_extensions= (path + [neighbour] for neighbour in graph.get_connected_nodes(path[-1]))
+		for extension in all_extensions:
+			if extension[-1] not in extended_set:
+				agenda.append(extension)
+
+	return result_path
+
 
 
 ## It's useful to determine if a graph has a consistent and admissible
@@ -175,7 +215,8 @@ def a_star(graph, start, goal):
 ## consistent, but not admissible?
 
 def is_admissible(graph, goal):
-	raise NotImplementedError
+	for node in graph.nodes:
+		if 
 
 def is_consistent(graph, goal):
 	raise NotImplementedError
